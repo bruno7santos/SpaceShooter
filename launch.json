@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Jogar / Depurar",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/SpaceShooter.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe",
+      "preLaunchTask": "Compilar (make)"
+    }
+  ]
+}

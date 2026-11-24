@@ -1,0 +1,50 @@
+# Gera o SpaceShooter.exe na nuvem (GitHub Actions), sem instalar nada no seu computador.
+#
+# Como usar: envie o projeto para um repositorio no GitHub, abra a aba "Actions",
+# escolha "Build Windows exe" e clique em "Run workflow". Quando terminar, baixe o
+# arquivo "SpaceShooter-windows" na secao "Artifacts" da execucao.
+#
+# ATENCAO: este fluxo ainda nao foi executado. Se falhar, abra o log do passo que
+# falhou. Se o download da raylib der erro, confira a versao em RAYLIB_VERSION.
+name: Build Windows exe
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+env:
+  RAYLIB_VERSION: "5.5"
+
+jobs:
+  windows-exe:
+    runs-on: windows-latest
+    steps:
+      - name: Baixar o projeto
+        uses: actions/checkout@v4
+
+      - name: Baixar a raylib para Windows (MinGW-w64)
+        shell: pwsh
+        run: |
+          $url = "https://github.com/raysan5/raylib/releases/download/$env:RAYLIB_VERSION/raylib-$($env:RAYLIB_VERSION)_win64_mingw-w64.zip"
+          Invoke-WebRequest -Uri $url -OutFile raylib.zip
+          Expand-Archive -Path raylib.zip -DestinationPath raylib_dl
+
+      - name: Compilar e ligar todos os modulos
+        shell: bash
+        run: |
+          INC=$(dirname "$(find raylib_dl -name raylib.h | head -n 1)")
+          LIB=$(dirname "$(find raylib_dl -name libraylib.a | head -n 1)")
+          echo "include: $INC"
+          echo "lib: $LIB"
+          gcc -std=c99 -O2 -DNDEBUG -Isrc -I"$INC" src/*.c -o SpaceShooter.exe -L"$LIB" -lraylib -lopengl32 -lgdi32 -lwinmm -lm -mwindows
+          ls -la SpaceShooter.exe
+
+      - name: Guardar o resultado
+        uses: actions/upload-artifact@v4
+        with:
+          name: SpaceShooter-windows
+          path: |
+            SpaceShooter.exe
+            README.md
+            LICENSE

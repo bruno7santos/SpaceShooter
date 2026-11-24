@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compilar (make)",
+      "type": "shell",
+      "command": "C:/raylib/w64devkit/bin/make.exe",
+      "args": ["RAYLIB_PATH=C:/raylib/raylib"],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": { "PATH": "C:/raylib/w64devkit/bin;${env:PATH}" }
+      },
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}
